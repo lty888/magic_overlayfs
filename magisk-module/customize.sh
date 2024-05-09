@@ -132,6 +132,13 @@ if [ "$KSU" == true ] && [ "$KSU_VER_CODE" -ge 11210 ]; then
     mv -f "$MODPATH/post-fs-data.sh" "$MODPATH/post-mount.sh"
 fi
 
-ui_print "- If you like my work, you can donate at http://paypal.me/huskydg"
+OVERLAY_IMAGE_EXTRA=0     # number of kb need to be added to overlay.img
+OVERLAY_IMAGE_SHRINK=true # shrink overlay.img or not?
 
-ui_print
+# Only use OverlayFS if Magisk_OverlayFS is installed
+if [ -f "/data/adb/modules/magisk_overlayfs/util_functions.sh" ] && \
+    /data/adb/modules/magisk_overlayfs/overlayfs_system --test; then
+  ui_print "- Add support for overlayfs"
+  . /data/adb/modules/magisk_overlayfs/util_functions.sh
+  support_overlayfs && rm -rf "$MODPATH"/system
+fi
